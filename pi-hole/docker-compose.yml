@@ -1,0 +1,47 @@
+---
+version: "3"
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: odin
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "90:80/tcp"
+      - "9943:443/tcp"
+    environment:
+      - TZ=Asia/Kolkata
+      - ServerIP=10.20.20.110
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro'
+      - '/home/kd/pi-hole/etc-pihole/:/etc/pihole/'
+      - '/home/kd/pi-hole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    # To use pi-hole's DHCP service, enable NET_ADMIN
+    # cap_add:
+    #  - NET_ADMIN
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.entrypoints=http"
+      - "traefik.http.routers.pihole.rule=Host(`dns.local.puvvadi.net`)"
+      - "traefik.http.middlewares.pihole-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.pihole.middlewares=pihole-https-redirect"
+      - "traefik.http.routers.pihole-secure.entrypoints=https"
+      - "traefik.http.routers.pihole-secure.rule=Host(`dns.local.puvvadi.net`)"
+      - "traefik.http.routers.pihole-secure.tls=true"
+      - "traefik.http.routers.pihole-secure.service=pihole"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.http.services.pihole.loadbalancer.server.scheme=http"
+      - "traefik.docker.network=proxy"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
