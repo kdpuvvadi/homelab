@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    ports:
+      - 8100:80
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - vaultwarden:/data
+    environment:
+      - DOMAIN=https://vaultwarden.local.puvvadi.net
+      - SMTP_HOST=smtp.example.com
+      - SMTP_FROM=email@example.com
+      - SMTP_FROM_NAME=Vaultwarden
+      - SMTP_SECURITY=TLS
+      - SMTP_PORT=XXXX
+      - SMTP_USERNAME=email@example.com
+      - SMTP_PASSWORD=YourReallyStrongPasswordHere
+      - SMTP_AUTH_MECHANISM="Mechanism"
+      - SIGNUPS_ALLOWED=true # change this to false after your account creation.
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
+      - traefik.http.middlewares.redirect-https.redirectScheme.permanent=true
+      - traefik.http.routers.vaultwarden-https.rule=Host(`vaultwarden.local.puvvadi.net`)
+      - traefik.http.routers.vaultwarden-https.entrypoints=https
+      - traefik.http.routers.vaultwarden-https.tls=true
+      - traefik.http.routers.vaultwarden-https.service=vaultwarden
+      - traefik.http.routers.vaultwarden-http.rule=Host(`vaultwarden.local.puvvadi.net`)
+      - traefik.http.routers.vaultwarden-http.entrypoints=http
+      - traefik.http.routers.vaultwarden-http.middlewares=redirect-https
+      - traefik.http.routers.vaultwarden-http.service=vaultwarden
+      - traefik.http.services.vaultwarden.loadbalancer.server.port=80
+      - traefik.http.routers.vaultwarden-websocket-https.rule=Host(`vaultwarden.local.puvvadi.net`) && Path(`/notifications/hub`)
+      - traefik.http.routers.vaultwarden-websocket-https.entrypoints=https
+      - traefik.http.routers.vaultwarden-websocket-https.tls=true
+      - traefik.http.routers.vaultwarden-websocket-https.service=vaultwarden-websocket
+      - traefik.http.routers.vaultwarden-websocket-http.rule=Host(`vaultwarden.local.puvvadi.net`) && Path(`/notifications/hub`)
+      - traefik.http.routers.vaultwarden-websocket-http.entrypoints=http
+      - traefik.http.routers.vaultwarden-websocket-http.middlewares=redirect-https
+      - traefik.http.routers.vaultwarden-websocket-http.service=vaultwarden-websocket
+      - traefik.http.services.vaultwarden-websocket.loadbalancer.server.port=3012
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  vaultwarden:
+    external: true
