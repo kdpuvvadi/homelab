@@ -1,0 +1,54 @@
+http:
+  routers:
+    ha-router:
+      entryPoints:
+        - "https"
+      service: ha-service
+      rule: "Host(`ha.local.puvvadi.net`)"
+      tls: {}
+      middlewares:
+        - default-headers
+        - https-redirect
+        - ha-auth
+  services:
+    ha-service:
+      loadBalancer:
+        servers:
+          - url: http://10.20.20.115:8123
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    ha-auth:
+      headers:
+        sslRedirect: true
+
+    default-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipWhiteList:
+        sourceRange:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+        - "100.64.0.0/10"
+
+    secured:
+      chain:
+        middlewares:
+        - default-headers
