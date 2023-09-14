@@ -19,6 +19,15 @@ http:
         - https-redirectscheme
       tls: {}
       service: omada
+    nvr:
+      entryPoints:
+        - "https"
+      rule: "Host(`nvr.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: nvr
 
   services:
     proxmox:
@@ -30,6 +39,11 @@ http:
       loadBalancer:
         servers:
           - url: "https://192.168.0.3"
+        passHostHeader: true
+    nvr:
+      loadBalancer:
+        servers:
+          - url: "https://10.20.20.120:8888"
         passHostHeader: true
 
   middlewares:
