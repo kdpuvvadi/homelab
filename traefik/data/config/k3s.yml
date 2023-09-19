@@ -10,12 +10,27 @@ http:
         - https-redirectscheme
       tls: {}
       service: k3s-nginx
+    
+    k3s-code-server:
+      entryPoints:
+        - "https"
+      rule: "Host(`code.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: k3s-code-server
 
   services:
     k3s-nginx:
       loadBalancer:
         servers:
           - url: "http://10.20.20.216"
+        passHostHeader: true
+    k3s-code-server:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.218:8443"
         passHostHeader: true
 
   middlewares:
