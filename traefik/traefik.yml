@@ -11,6 +11,8 @@ entryPoints:
           scheme: https
   https:
     address: ":443"
+  dnsovertls:
+    address: ":853"
 serversTransport:
   insecureSkipVerify: true
 providers:

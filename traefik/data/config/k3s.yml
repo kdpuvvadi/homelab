@@ -1,4 +1,18 @@
 ---
+tcp:
+  routers:
+    k3s-dot:
+      entryPoints:
+        - "dnsovertls"
+      rule: "Host(`pihole.local.puvvadi.net`)"
+      service: k3s-dot
+    
+  services:
+    k3s-dot:
+      loadBalancer:
+        servers:
+          port: 53
+
 http:
   routers:
     k3s-nginx:
@@ -20,6 +34,16 @@ http:
         - https-redirectscheme
       tls: {}
       service: k3s-code-server
+    
+    k3s-pihole:
+      entryPoints:
+        - "https"
+      rule: "Host(`pihole.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: k3s-pihole
 
   services:
     k3s-nginx:
@@ -31,6 +55,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://10.20.20.218:8443"
+        passHostHeader: true
+    k3s-pihole:
+      loadBalancer:
+        servers:
+          - url: "https://10.20.20.220"
         passHostHeader: true
 
   middlewares:
