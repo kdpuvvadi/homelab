@@ -28,6 +28,15 @@ http:
         - https-redirectscheme
       tls: {}
       service: nvr
+    jellyfin:
+      entryPoints:
+        - "https"
+      rule: "Host(`jellyfin.local.puvvadi.net`,`media.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      service: jellyfin
+      tls: {}
 
   services:
     proxmox:
@@ -44,6 +53,11 @@ http:
       loadBalancer:
         servers:
           - url: "https://10.20.20.120:8888"
+        passHostHeader: true
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.113:8096"
         passHostHeader: true
 
   middlewares:
