@@ -4,7 +4,7 @@ http:
       entryPoints:
         - "https"
       service: ha-service
-      rule: "Host(`ha.local.puvvadi.net`)"
+      rule: "Host(`ha.local.puvvadi.net`,`hass.ha.puvvadi.net`)"
       tls: {}
       middlewares:
         - default-headers
