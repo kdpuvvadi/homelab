@@ -14,4 +14,6 @@ services:
       WATCHTOWER_POLL_INTERVAL: 3600
       WATCHTOWER_NOTIFICATION_URL: googlechat://chat.googleapis.com/v1/spaces/SPACE_ID/messages?key=KEY&token=TOKEN
       WATCHTOWER_NOTIFICATION_TEMPLATE: "{{range .}}{{.Time.Format \"02-01-2006 15:04:05\"}} ({{.Level}}): {{.Message}}{{println}}{{end}}"
+      WATCHTOWER_HTTP_API_METRICS: true
+      WATCHTOWER_HTTP_API_TOKEN: bear_token
     restart: always
