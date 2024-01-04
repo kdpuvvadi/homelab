@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: host-puvvadi-net
+  namespace: default
+spec:
+  secretName: host-puvvadi-net-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.host.puvvadi.net"
+  dnsNames:
+  - "host.puvvadi.net"
+  - "*.host.puvvadi.net"
