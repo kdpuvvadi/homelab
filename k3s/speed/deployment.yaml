@@ -1,0 +1,41 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: librespeed
+  namespace: default
+  labels:
+    app: librespeed
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: librespeed
+  template:
+    metadata:
+      labels:
+        app: librespeed
+    spec:
+      containers:
+      - name: librespeed
+        image: ghcr.io/librespeed/speedtest
+        env:
+          - name: MODE
+            value: "standalone"
+          - name: WEBPORT
+            value: "8088"
+          - name: TITLE
+            value: "Speedtest for Puvvadi's"
+        ports:
+          - containerPort: 8088
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.5"

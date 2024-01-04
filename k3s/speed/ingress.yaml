@@ -1,0 +1,21 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: librespeed
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`speed.host.puvvadi.net`)
+      kind: Rule
+      services:
+        - name: librespeed
+          port: 8088
+      middlewares:
+        - name: default-headers
+  tls:
+    secretName: host-puvvadi-net-tls
