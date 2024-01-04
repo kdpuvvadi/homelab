@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: blog
-        image: ghcr.io/kdpuvvadi/blog:d32619c
+        image: ghcr.io/kdpuvvadi/blog:a9434a8
         resources:
           limits:
             memory: 256Mi
