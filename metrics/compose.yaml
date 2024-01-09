@@ -1,0 +1,76 @@
+version: "3"
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - proxy
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./data:/prometheus
+    restart: unless-stopped
+    user: root
+    networks:
+      - proxy
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command: --path.rootfs=/host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - proxy
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - proxy
+  omada-exporter:
+    image: chhaley/omada_exporter
+    container_name: omada-exporter
+    ports:
+      - 9202:9202
+    devices:
+      - /dev/kmsg
+    environment:
+      OMADA_HOST: ${OMADA_HOST}
+      OMADA_USER: ${OMADA_USER}
+      OMADA_PASS: ${OMADA_PASS}
+      OMADA_SITE: ${OMADA_SITE}
+      OMADA_INSECURE: true
+    restart: unless-stopped
+    networks:
+      - proxy
+volumes:
+  grafana-data:
+    driver: local
+  prometheus-data:
+    driver: local
+networks:
+  proxy:
+    external: true
