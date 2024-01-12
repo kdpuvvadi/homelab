@@ -10,6 +10,17 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.grafana.entrypoints=https"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.local.puvvadi.net`)"
+      - "traefik.http.routers.grafana.middlewares=default-headers@file, https-redirectscheme@file"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.scheme=http"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -23,6 +34,16 @@ services:
     user: root
     networks:
       - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.prometheus.entrypoints=https"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.local.puvvadi.net`)"
+      - "traefik.http.routers.prometheus.middlewares=default-headers@file, https-redirectscheme@file"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.routers.prometheus.service=prometheus"
+      - "traefik.http.services.prometheus.loadbalancer.server.scheme=http"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
@@ -66,6 +87,20 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+  prometheus-pve-exporter:
+    init: true
+    image: prompve/prometheus-pve-exporter
+    container_name: prometheus-pve-exporter
+    ports:
+      - 9221:9221
+    environment:
+      PVE_USER: ${PVE_USER}
+      PVE_VERIFY_SSL: true
+      PVE_TOKEN_NAME: ${PVE_TOKEN_NAME}
+      PVE_TOKEN_VALUE: ${PVE_TOKEN_VALUE}
+    networks:
+      - proxy
+    restart: unless-stopped
 volumes:
   grafana-data:
     driver: local
