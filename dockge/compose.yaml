@@ -12,6 +12,7 @@ services:
       - /home/kd:/home/kd
     environment:
       - DOCKGE_STACKS_DIR=/home/kd
+    user: kd
     networks:
       - proxy
     labels:
