@@ -50,6 +50,25 @@ services:
       - "traefik.http.routers.traefik-secure.tls.domains[3].sans=*.dns.puvvadi.net"
       - "traefik.http.routers.traefik-secure.service=api@internal"
 
+  traefik-certs-dumper:
+    container_name: traefik-certs-dumper
+    image: ldez/traefik-certs-dumper:latest
+    entrypoint: sh -c '
+      apk add jq
+      ; while ! [ -e /data/acme.json ]
+      || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ]; do
+      sleep 1
+      ; done
+      && traefik-certs-dumper file --domain-subdir
+      --crt-ext=.pem --key-ext=.pem
+      --version v2 --watch
+      --source /data/acme.json --dest /data/certs'
+    volumes:
+      - /home/kd/traefik/data:/data
+    networks:
+      - proxy
+    restart: unless-stopped
+
 networks:
   proxy:
     external: true
