@@ -42,6 +42,12 @@ services:
       - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
       - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.puvvadi.net"
       - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[1].main=puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[1].sans=*.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[2].main=host.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[2].sans=*.host.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[3].main=dns.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[3].sans=*.dns.puvvadi.net"
       - "traefik.http.routers.traefik-secure.service=api@internal"
 
 networks:
