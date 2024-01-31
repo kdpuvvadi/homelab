@@ -1,0 +1,42 @@
+---
+- name: Omada playbook test
+  hosts: localhost
+  become: true
+
+  pre_tasks:
+    - name: Vars
+      include_vars: vars.yml
+
+    - name: Install packages
+      import_tasks: tasks/packages.yml
+      when: inventory_hostname in groups["omada"]
+
+  tasks:
+    - name: Create a full clone of debian 12 template
+      community.general.proxmox:
+        vmid: 333
+        node: pve1
+        api_user: root@pam
+        api_password: {{pve_api_password}}
+        api_host: pve1.dns.puvvadi.net
+        clone: 9000
+        hostname: omada-ci.dns.puvvadi.net
+        storage: local-lvm
+      when: inventory_hostname in groups["pve"]
+
+    - name: Waits for port 22 to become avaiable
+      ansible.builtin.wait_for:
+        host: omada-ci.dns.puvvadi.net
+        port: 8000
+        delay: 3600
+        state: started
+      when: inventory_hostname in groups["pve"]
+
+    - name: Download Controller from tplink
+      import_tasks: tasks/setup.yml
+      when: inventory_hostname in groups["omada"]
+
+    - name: Install Omada
+      import_tasks: tasks/omada.yml
+      when: inventory_hostname in groups["omada"]
+
