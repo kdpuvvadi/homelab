@@ -1,0 +1,62 @@
+---
+version: '3'
+
+services:
+  postgres:
+    container_name: semaphore-postgres
+    image: postgres:14
+    hostname: postgres
+    user: root
+    volumes:
+     - /home/kd/semaphore/postgresql:/var/lib/postgresql/data
+    environment:
+     POSTGRES_USER: semaphore
+     POSTGRES_PASSWORD: semaphore
+     POSTGRES_DB: semaphore
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  semaphore:
+    container_name: semaphore
+    image: semaphoreui/semaphore:latest
+    restart: unless-stopped
+    user: root
+    environment:
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: semaphore
+      SEMAPHORE_DB_HOST: postgres
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION}
+      ANSIBLE_HOST_KEY_CHECKING: False
+    depends_on:
+      - postgres
+    networks:
+      - proxy
+    volumes:
+      - /home/kd/semaphore/data:/etc/semaphore
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.semaphore.entrypoints=http"
+      - "traefik.http.routers.semaphore.rule=Host(`semaphore.local.puvvadi.net`)"
+      - "traefik.http.routers.semaphore.middlewares=semaphore-https-redirect"
+      - "traefik.http.middlewares.semaphore-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.semaphore-secure.entrypoints=https"
+      - "traefik.http.routers.semaphore.middlewares=default-headers@file"
+      - "traefik.http.routers.semaphore-secure.rule=Host(`semaphore.local.puvvadi.net`)"
+      - "traefik.http.routers.semaphore-secure.tls=true"
+      - "traefik.http.routers.semaphore-secure.service=semaphore"
+      - "traefik.http.services.semaphore.loadbalancer.server.port=3000"
+      - "traefik.http.services.semaphore.loadbalancer.server.scheme=http"
+      - "traefik.docker.network=proxy"
+
+networks:
+  proxy:
+    external: true
