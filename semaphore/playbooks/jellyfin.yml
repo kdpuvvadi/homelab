@@ -1,0 +1,21 @@
+---
+- name: JF
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update docker host
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        state: latest
+
+    - name: Start service docker, if not started
+      ansible.builtin.service:
+        name: docker
+        state: started
+
+    - name: Start service docker, if not started
+      ansible.builtin.service:
+        name: jellfin
+        state: started
