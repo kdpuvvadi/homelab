@@ -17,5 +17,5 @@
 
     - name: Start service docker, if not started
       ansible.builtin.service:
-        name: jellfin
+        name: jellyfin
         state: started
