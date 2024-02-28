@@ -1,0 +1,23 @@
+---
+version: '3'
+
+services:
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - 8080:80
+    hostname: pgadmin
+    user: root
+    networks:
+      - pg
+
+networks:
+  pg:
