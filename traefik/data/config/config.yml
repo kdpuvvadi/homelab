@@ -10,6 +10,16 @@ http:
         - https-redirectscheme
       tls: {}
       service: proxmox
+    pihole:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: pihole
+
     omada:
       entryPoints:
         - "https"
@@ -19,24 +29,142 @@ http:
         - https-redirectscheme
       tls: {}
       service: omada
-    nvr:
+
+    mqtt:
       entryPoints:
         - "https"
-      rule: "Host(`nvr.local.puvvadi.net`)"
+      rule: "Host(`mqtt.local.puvvadi.net`)"
       middlewares:
         - default-headers
         - https-redirectscheme
       tls: {}
-      service: nvr
+      service: mqtt
+
     jellyfin:
       entryPoints:
         - "https"
-      rule: "Host(`jellyfin.local.puvvadi.net`,`media.local.puvvadi.net`)"
+      rule: "Host(`jellyfin.local.puvvadi.net`)"
       middlewares:
         - default-headers
         - https-redirectscheme
-      service: jellyfin
       tls: {}
+      service: jellyfin
+
+    media:
+      entryPoints:
+        - "https"
+      rule: "Host(`media.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: jellyfin
+
+    radarr:
+      entryPoints:
+        - "https"
+      rule: "Host(`radarr.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: radarr
+    sonarr:
+      entryPoints:
+        - "https"
+      rule: "Host(`sonarr.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: sonarr
+    prowlarr:
+      entryPoints:
+        - "https"
+      rule: "Host(`prowlarr.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: prowlarr
+    deluge:
+      entryPoints:
+        - "https"
+      rule: "Host(`deluge.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: deluge
+    bazarr:
+      entryPoints:
+        - "https"
+      rule: "Host(`bazarr.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: bazarr
+    pb:
+      entryPoints:
+        - "https"
+      rule: "Host(`stations.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: pb
+
+    haos:
+      entryPoints:
+        - "https"
+      rule: "Host(`ha.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: haos
+
+    homebridge:
+      entryPoints:
+        - "https"
+      rule: "Host(`homebridge.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: homebridge
+
+    adguard:
+      entryPoints:
+        - "https"
+      rule: "Host(`adguard.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - habasicauth
+        # - ha-basicauth
+      tls: {}
+      service: dns2
+    pg:
+      entryPoints:
+        - "https"
+      rule: "Host(`pg.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: pg
+
+    dns2:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns2.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: dns2
 
   services:
     proxmox:
@@ -44,23 +172,103 @@ http:
         servers:
           - url: "https://10.20.20.104:8006"
         passHostHeader: true
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.132"
+        passHostHeader: true
+
     omada:
       loadBalancer:
         servers:
           - url: "https://192.168.0.3"
         passHostHeader: true
-    nvr:
-      loadBalancer:
-        servers:
-          - url: "https://10.20.20.120:8888"
-        passHostHeader: true
+
+    # grafana:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://10.20.20.130:3000"
+    #     passHostHeader: true
+
     jellyfin:
       loadBalancer:
         servers:
-          - url: "http://10.20.20.113:8096"
+          - url: "http://10.20.20.138:8096"
+        passHostHeader: true
+
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.138:7878"
+        passHostHeader: true
+    deluge:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.138:8112"
+        passHostHeader: true
+    prowlarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.138:9696"
+        passHostHeader: true
+    sonarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.138:8989"
+        passHostHeader: true
+    bazarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.138:6767"
+        passHostHeader: true
+    pb:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.130:8090"
+        passHostHeader: true
+
+    mqtt:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.5:18083"
+        passHostHeader: true
+
+    haos:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.134:8123"
+        passHostHeader: true
+
+    homebridge:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.130:8581"
+        passHostHeader: true
+
+    adguard:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.134:8080"
+        passHostHeader: true
+
+    pg:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.115:8080"
+        passHostHeader: true
+
+    dns2:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.113"
         passHostHeader: true
 
   middlewares:
+    habasicauth:
+      forwardAuth:
+        address: "http://10.20.20.134:8080"
+        trustForwardHeader: true
+
     https-redirectscheme:
       redirectScheme:
         scheme: https
