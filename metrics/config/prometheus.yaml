@@ -1,5 +1,5 @@
 global:
-  scrape_interval:     15s
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -14,7 +14,7 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
-  
+
   - job_name: 'omada-exporter'
     static_configs:
       - targets: ['omada-exporter:9202']
@@ -22,10 +22,31 @@ scrape_configs:
   - job_name: 'watchtower'
     scrape_interval: 5s
     metrics_path: /v1/metrics
-    bearer_token: token
+    bearer_token: ${WATCHTOWER_TOKEN}
     static_configs:
-      - targets: ['10.20.20.130:8888']
-  
+      - targets:
+        - watchtower:8080
+        - pg.dns.puvvadi.net:8888
+        - jellyfin.dns.puvvadi.net:8888
+
   - job_name: 'traefik'
     static_configs:
       - targets: ['traefik:8082']
+
+  - job_name: 'pve'
+    static_configs:
+      - targets:
+        - pve.local.puvvadi.net:443
+        - pve-ms1.local.puvvadi.net:443
+    metrics_path: /pve
+    params:
+      module: [default]
+      cluster: ['1']
+      node: ['1']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: prometheus-pve-exporter:9221  # PVE exporter.
