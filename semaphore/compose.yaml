@@ -27,18 +27,15 @@ services:
       - /home/kd/semaphore/data:/etc/semaphore
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.semaphore.entrypoints=http"
-      - "traefik.http.routers.semaphore.rule=Host(`ansible.local.puvvadi.net`)"
-      - "traefik.http.routers.semaphore.middlewares=semaphore-https-redirect"
-      - "traefik.http.middlewares.semaphore-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.semaphore-secure.entrypoints=https"
-      - "traefik.http.routers.semaphore.middlewares=default-headers@file"
-      - "traefik.http.routers.semaphore-secure.rule=Host(`ansible.local.puvvadi.net`)"
-      - "traefik.http.routers.semaphore-secure.tls=true"
-      - "traefik.http.routers.semaphore-secure.service=semaphore"
-      - "traefik.http.services.semaphore.loadbalancer.server.port=3000"
-      - "traefik.http.services.semaphore.loadbalancer.server.scheme=http"
       - "traefik.docker.network=proxy"
+      - "traefik.http.routers.semaphore.entrypoints=https"
+      - "traefik.http.routers.semaphore.rule=Host(`ansible.local.puvvadi.net`)"
+      - "traefik.http.routers.semaphore.middlewares=default-headers@file, https-redirectscheme@file"
+      - "traefik.http.routers.semaphore.tls=true"
+      - "traefik.http.routers.semaphore.service=semaphore"
+      - "traefik.http.services.semaphore.loadbalancer.server.scheme=http"
+      - "traefik.http.services.semaphore.loadbalancer.server.port=3000"
+
 networks:
   proxy:
     external: true
