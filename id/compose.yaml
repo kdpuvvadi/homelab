@@ -1,0 +1,84 @@
+---
+
+services:
+  zitadel:
+    image: ghcr.io/zitadel/zitadel:latest
+    container_name: zitadel
+     # for ZITADEL_MASTERKEY run tr -dc A-Za-z0-9 </dev/urandom | head -c 32
+    command: start-from-init --config /zitadel-config.yaml --config /zitadel-secrets.yaml --steps /zitadel-init-steps.yaml --masterkey ${ZITADEL_MASTERKEY} --tlsMode external
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    environment:
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME: ${ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME}
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD: ${ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD}
+    ports:
+      - 8080:8080
+    volumes:
+      - ./zitadel-config.yaml:/zitadel-config.yaml:ro
+      - ./zitadel-secrets.yaml:/zitadel-secrets.yaml:ro
+      - ./zitadel-init-steps.yaml:/zitadel-init-steps.yaml:ro
+      - ./zitadel-certs:/crdb-certs:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.zitadel.entrypoints=http
+      - traefik.http.routers.zitadel.rule=Host(`id.domain.net`) || HostRegexp(`{subdomain:[a-z]+}.id.domain.net`)
+      - traefik.http.middlewares.zitadel-https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.zitadel.middlewares=zitadel-https-redirect
+      - traefik.http.routers.zitadel-secure.entrypoints=https
+      - traefik.http.routers.zitadel-secure.rule=Host(`id.domain.net`) || HostRegexp(`{subdomain:[a-z]+}.id.domain.net`)
+      - traefik.http.routers.zitadel-secure.tls=true
+      - traefik.http.routers.zitadel-secure.service=zitadel
+      - traefik.http.services.zitadel.loadbalancer.server.scheme=h2c
+      - traefik.http.services.zitadel.loadbalancer.passHostHeader=true
+      - traefik.http.services.zitadel.loadbalancer.server.port=8080
+      - traefik.docker.network=proxy
+    restart: always
+    networks:
+      - zitadel
+      - proxy
+    dns:
+      - 10.20.20.132 # replace it with local dns resolver
+      - 127.0.0.1
+
+  certs:
+    image: cockroachdb/cockroach:latest
+    container_name: certs
+    entrypoint:
+      - /bin/bash
+      - -c
+    command:
+      - cp /certs/* /zitadel-certs/ && cockroach cert create-client --overwrite --certs-dir /zitadel-certs/ --ca-key /zitadel-certs/ca.key zitadel_user && chown 1000:1000 /zitadel-certs/*
+    volumes:
+      - ./certs:/certs:ro
+      - ./zitadel-certs:/zitadel-certs:rw
+    depends_on:
+      cockroach-db:
+        condition: service_healthy
+    networks:
+      - zitadel
+
+  cockroach-db:
+    container_name: cockroach-db
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --advertise-addr cockroach-db
+    healthcheck:
+      test:  ["CMD", "curl", "-f", "http://cockroach-db:8080/health?ready=1"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+    ports:
+      - 9090:8080
+      - 26257:26257
+    volumes:
+      - ./certs:/cockroach/certs:rw
+      - ./data:/cockroach/cockroach-data:rw
+    restart: always
+    networks:
+      - zitadel
+networks:
+  zitadel:
+    external: true
+  proxy:
+    external: true
