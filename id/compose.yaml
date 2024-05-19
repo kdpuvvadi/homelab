@@ -38,7 +38,7 @@ services:
       - zitadel
       - proxy
     dns:
-      - 10.20.20.132 # replace it with local dns resolver
+      - 10.20.20.20 # replace it with local dns resolver
       - 127.0.0.1
 
   certs:

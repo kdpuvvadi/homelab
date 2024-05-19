@@ -175,7 +175,7 @@ http:
     pihole:
       loadBalancer:
         servers:
-          - url: "http://10.20.20.132"
+          - url: "http://10.20.20.20"
         passHostHeader: true
 
     omada:

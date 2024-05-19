@@ -13,7 +13,7 @@ services:
       - 80:80
       - 443:443
     dns:
-      - 10.20.20.132
+      - 10.20.20.20
       - 1.1.1.1
     environment:
       - CF_API_EMAIL=

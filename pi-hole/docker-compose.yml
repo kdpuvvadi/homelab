@@ -14,7 +14,7 @@ services:
       - "9943:443/tcp"
     environment:
       - TZ=Asia/Kolkata
-      - ServerIP=10.20.20.132
+      - ServerIP=10.20.20.20
     dns:
       - 127.0.0.1
       - 1.1.1.1
