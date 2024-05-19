@@ -260,7 +260,7 @@ http:
     dns2:
       loadBalancer:
         servers:
-          - url: "http://10.20.20.113"
+          - url: "http://10.20.30.30"
         passHostHeader: true
 
   middlewares:
