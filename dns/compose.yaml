@@ -1,0 +1,21 @@
+---
+
+services:
+  bind9:
+    container_name: dns
+    image: ubuntu/bind9:latest
+    environment:
+      - BIND9_USER=root
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/kd/compose/bind9/config:/etc/bind:rw
+      - /home/kd/compose/bind9/cache:/var/cache/bind:rw
+      - /home/kd/compose/bind9/records:/var/lib/bind:rw
+      - /home/kd/compose/bind9/logs:/var/log/bind:rw
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    restart: always
