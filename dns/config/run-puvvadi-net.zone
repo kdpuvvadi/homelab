@@ -1,0 +1,18 @@
+$ORIGIN run.puvvadi.net.
+$TTL 86400      ; 1 day
+@               IN      SOA     ns.run.puvvadi.net. info.puvvadi.net. (
+                                                1507241704 ; serial
+                                                3600       ; refresh (1 hour)
+                                                3600       ; retry (1 hour)
+                                                2419200    ; expire (4 weeks)
+                                                3600       ; minimum (1 hour)
+                                )
+
+                IN      NS      ns.run.puvvadi.net.
+
+ns              IN      A       10.10.10.10
+
+; dns records below
+
+@                               IN      A               10.20.20.74
+*                               IN      A               10.20.20.74
