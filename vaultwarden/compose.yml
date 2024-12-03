@@ -1,4 +1,4 @@
-version: '3'
+---
 
 services:
   vaultwarden:
@@ -9,13 +9,14 @@ services:
       - no-new-privileges:true
     networks:
       - proxy
+      - vaultwarden
     ports:
       - 8100:80
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - vaultwarden:/data
+      - /data:/data
     environment:
-      - DOMAIN=https://vaultwarden.local.puvvadi.net
+      - DOMAIN=https://vaultwarden.puvvadi.net
       - SMTP_HOST=smtp.example.com
       - SMTP_FROM=email@example.com
       - SMTP_FROM_NAME=Vaultwarden
@@ -29,7 +30,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       - "traefik.http.routers.vaultwarden.entrypoints=https"
-      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.local.puvvadi.net`)"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.puvvadi.net`)"
       - "traefik.http.routers.vaultwarden.middlewares=default-headers@file, https-redirectscheme@file"
       - "traefik.http.routers.vaultwarden.tls=true"
       - "traefik.http.routers.vaultwarden.service=vaultwarden"
