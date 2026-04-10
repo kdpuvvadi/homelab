@@ -1,0 +1,458 @@
+pages:
+  - name: Home
+    width: slim
+    center-vertically: true
+    columns:
+      - size: full
+        widgets:
+          - type: search
+            autofocus: true
+            center-vertically: true
+            search-engine: google
+            new-tab: true
+            target: _blank
+            placeholder: "Search Google..."
+            bangs:
+              - title: Google
+                shortcut: "!g"
+                url: https://www.google.com/search?q={QUERY}
+              - title: Youtube
+                shortcut: "!y"
+                url: https://www.youtube.com/results?search_query={QUERY}
+              - title: Wikipedia
+                shortcut: "!w"
+                url: https://en.wikipedia.org/wiki/Special:Search?search={QUERY}
+              - title: DuckDuckGo
+                shortcut: "!d"
+                url: https://duckduckgo.com/?q={QUERY}
+              - title: Amazon
+                shortcut: "!a"
+                url: https://www.amazon.in/s?k={QUERY}
+
+          - type: bookmarks
+            title: Shortcuts
+            groups:
+              - title: Productivity
+                links:
+                  - title: Gmail
+                    url: https://mail.google.com/mail/u/0/
+                    target: _blank
+                    icon: si:gmail
+                  - title: Zoho mail
+                    url: https://mail.zoho.in/zm/#mail/folder/inbox
+                    target: _blank
+                    icon: si:zoho
+                  - title: Google Docks
+                    url: https://docs.google.com/document/
+                    target: _blank
+                    icon: si:googledocs
+                  - title: Google Sheets
+                    url: https://docs.google.com/spreadsheets/
+                    target: _blank
+                    icon: si:googlesheets
+
+              - title: Cloud
+                links:
+                  - title: Cloudflare
+                    url: https://dash.cloudflare.com/
+                    target: _blank
+                    icon: si:cloudflare
+                  - title: AWS Management Console
+                    url: https://aws.amazon.com/console/
+                    target: _blank
+                    icon: mdi:aws
+                  - title: Digital Ocean
+                    url: https://cloud.digitalocean.com/
+                    target: _blank
+                    icon: si:digitalocean
+                  - title: Google Cloud Console
+                    url: https://console.cloud.google.com/
+                    target: _blank
+                    icon: si:googlecloud
+                  - title: tailscale
+                    url: https://login.tailscale.com/admin/machines
+                    target: _blank
+                    icon: si:tailscale
+
+      - size: small
+        widgets:
+          - type: clock
+            timezones:
+              - label: Local
+                timezone: Asia/Kolkata
+              - label: UTC
+                timezone: UTC
+              - label: Los Angeles
+                timezone: America/Los_Angeles
+
+  - name: Bookmarks
+    width: slim
+
+    columns:
+      - size: full
+        widgets:
+          - type: bookmarks
+            title: " "
+            groups:
+              - title: Productivity
+                links:
+                  - title: Gmail
+                    url: https://mail.google.com/mail/u/0/
+                    target: _blank
+                    icon: si:gmail
+                  - title: Zoho mail
+                    url: https://mail.zoho.in/zm/#mail/folder/inbox
+                    target: _blank
+                    icon: si:zoho
+                  - title: Google Docks
+                    url: https://docs.google.com/document/
+                    target: _blank
+                    icon: si:googledocs
+                  - title: Google Sheets
+                    url: https://docs.google.com/spreadsheets/
+                    target: _blank
+                    icon: si:googlesheets
+
+              - title: Cloud
+                links:
+                  - title: Cloudflare
+                    url: https://dash.cloudflare.com/
+                    target: _blank
+                    icon: si:cloudflare
+                  - title: AWS Management Console
+                    url: https://aws.amazon.com/console/
+                    target: _blank
+                    icon: mdi:aws
+                  - title: Digital Ocean
+                    url: https://cloud.digitalocean.com/
+                    target: _blank
+                    icon: si:digitalocean
+                  - title: Google Cloud Console
+                    url: https://console.cloud.google.com/
+                    target: _blank
+                    icon: si:googlecloud
+                  - title: tailscale
+                    url: https://login.tailscale.com/admin/machines
+                    target: _blank
+                    icon: si:tailscale
+
+              - title: Metrics
+                links:
+                  - title: Prometheus
+                    url: hhttps://prometheus.local.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:prometheus
+                  - title: Loki
+                    url: https://loki.local.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: auto-invert di:loki
+                  - title: Grafana
+                    url: https://grafana.local.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:grafana
+
+              - title: Services
+                links:
+                  - title: Blog
+                    url: https://blog.local.puvvadi.net
+                    target: _blank
+                  - title: IT-Tools
+                    url: https://it-tools.local.puvvadi.net/
+                    target: _blank
+                    icon: si:gnometerminal
+                  - title: immich
+                    url: https://immich.media.puvvadi.net/
+                    target: _blank
+                    icon: si:immich
+                  - title: Bitwarden
+                    url: https://vaultwarden.local.puvvadi.net/
+                    target: _blank
+                    icon: si:vaultwarden
+
+              - title: DNS
+                links:
+                  - title: Pi-Hole
+                    url: https://dns.local.puvvadi.net/admin/
+                    target: _blank
+                    icon: si:pihole
+                    hide-arrow: true
+                  - title: AdGuard
+                    url: https://guard.dns.puvvadi.net/
+                    target: _blank
+                    icon: si:adguard
+                    hide-arrow: true
+                  - title: Bind9
+                    url: https://dns.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: auto-invert sh:bind-9
+
+              - title: Arr
+                links:
+                  - title: Sonarr
+                    url: http://sonarr.media.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: http://radarr.media.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:radarr
+                  - title: Prowlarr
+                    url: http://prowlarr.media.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: sh:prowlarr
+                  - title: Qbittorrent
+                    url: http://qbit.media.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:qbittorrent
+
+              - title: Network & Infra
+                links:
+                  - title: Omada
+                    url: https://omada.local.puvvadi.net/#home
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:omadacloud
+                  - title: Unifi
+                    url: https://ui.local.puvvadi.net/network/default/dashboard
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:ubiquiti
+                  - title: Home Assistant
+                    url: https://ha.local.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:homeassistant
+                  - title: Proxmox
+                    url: https://pve.local.puvvadi.net/#home
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:proxmox
+                  - title: Gitea
+                    url: https://git.local.puvvadi.net
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:gitea
+                  - title: OTF
+                    url: https://otf.puvvadi.net/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:terraform
+
+              - title: Social
+                links:
+                  - title: Reddit
+                    url: https://www.reddit.com/
+                    icon: si:reddit
+                    target: _blank
+                  - title: Twitter
+                    url: https://twitter.com/
+                    icon: si:twitter
+                    target: _blank
+                  - title: Instagram
+                    url: https://www.instagram.com/
+                    target: _blank
+                    icon: si:instagram
+
+              - title: Streaming
+                links:
+                  - title: Jellyfin
+                    url: https://media.puvvadi.net
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:jellyfin
+                  - title: Apple TV+
+                    url: https://tv.apple.com/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:appletv
+                  - title: Prime Video
+                    url: https://www.primevideo.com/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:primevideo
+                  - title: YouTube
+                    url: https://www.youtube.com/
+                    target: _blank
+                    hide-arrow: true
+                    icon: si:youtube
+
+  - name: Youtube
+    width: slim
+
+    columns:
+      - size: full
+        widgets:
+          - type: videos
+            limit: 50
+            collapse-after-rows: 6
+            style: grid-cards
+            channels:
+              - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+              - UCO2x-p9gg9TLKneXlibGR7w # Snazzy Labs
+              - UCJa14zeVf8p6clixTOIOVyQ # jakkuh
+              - UCUpt_5O1vYpWAGg77iNMQXA # zip tie tech
+              - UCJ0-OtVpF0wOKEqT2Z1HEtA # ElectroBOOM
+              - UCzgA9CBrIXPtkB2yNTTiy1w # Level 2 Jeff
+              - UCUpt_5O1vYpWAGg77iNMQXA # Zip Tie Tech
+              - UCy0tKL1T7wFoYcxCe0xjN6Q # Technology Connections
+              - UCVjlpEjEY9GpksqbEesJnNA # Uncle Roger
+              - UCMOqf8ab-42UUQIdVoKwjlQ # Practical Engineering
+              - UC1LpsuAUaKoMzzJSEt5WImw # Asianometry
+              - UCxzC4EngIsMrPmbm6Nxvb-A # Scott Manley
+              - UC-2YHgc363EdcusLIBbgxzg # Joe Scott
+              - UCjtUS7-SZTi6pXjUbzGHQCg # Undecided with Matt Ferrell
+              - UCEodFwnfPXdkzVPJZmuzAIg # C.W. Lemoine
+              - UCR1IuLEqb6UEA_zQ81kwXfg # Real Engineering
+              - UCsP7Bpw36J666Fct5M8u-ZA # How To Cook That
+              - UC0QHWhjbe5fGJEPz3sVb6nw # Doctor Mike
+              - UCWFKCr40YwOZQx8FHU_ZqqQ # JerryRigEverything
+              - UC4w1YQAJMWOz4qtxinq55LQ # Level1Techs
+              - UCOWcZ6Wicl-1N34H0zZe38w # Level1Linux
+              - UCBa659QWEk1AI4Tg--mrJ2A # Tom Scott
+              - UCOT2iLov0V7Re7ku_3UBtcQ # Hank Green
+              - UCarEovlrD9QY-fy-Z6apIDQ # Hasan Minhaj
+              - UCgbw0F-frjDxvQjzruGRJwg # The Serial Port
+              - UC-TGXkeSMAxvv9FAK2Tw-7Q # Truenas tech Talk
+              - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
+              - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
+
+  - name: Social
+    width: slim
+
+    columns:
+      - size: full
+        widgets:
+          - type: group
+            title: reddit & tech news
+            widgets:
+              - type: reddit
+                subreddit: technology
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+              - type: reddit
+                subreddit: selfhosted
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+              - type: reddit
+                subreddit: homelabindia
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+              - type: reddit
+                subreddit: LinusTechTips
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+              - type: reddit
+                subreddit: pcmasterrace
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+              - type: reddit
+                subreddit: mkindia
+                show-thumbnails: true
+                collapse-after: 10
+                limit: 20
+
+              - type: rss
+                limit: 20
+                collapse-after: 10
+                cache: 12h
+                feeds:
+                  - url: https://www.theverge.com/rss/index.xml
+                    title: The Verge
+                    limit: 5
+                  - url: https://bleepingcomputer.com/feed/
+                    title: Bleeping Computer
+                    limit: 5
+                  - url: https://www.techradar.com/rss
+                    title: TechRadar
+                    limit: 5
+
+  - name: Services
+    width: slim
+
+    columns:
+      - size: full
+        widgets:
+          - type: monitor
+            cache: 1m
+            title: Services
+            sites:
+              - title: Jellyfin
+                url: https://media.puvvadi.net
+                icon: si:jellyfin
+              - title: Gitea
+                url: https://git.local.puvvadi.net
+                icon: si:gitea
+              - title: immich
+                url: https://immich.media.puvvadi.net/
+                icon: si:immich
+              - title: Home Assistant
+                url: https://ha.local.puvvadi.net/
+                icon: si:homeassistant
+              - title: Pi-Hole
+                url: https://dns.local.puvvadi.net/admin/
+                icon: si:pihole
+              - title: AdGuard
+                url: https://guard.dns.puvvadi.net/
+                icon: si:adguard
+              - title: Omada
+                url: https://omada.local.puvvadi.net/#home
+                icon: si:omadacloud
+              - title: Unifi
+                url: https://ui.local.puvvadi.net/network/default/dashboard
+                icon: si:ubiquiti
+              - title: Prometheus
+                url: https://prometheus.local.puvvadi.net/
+                icon: si:prometheus
+              - title: Grafana
+                url: https://grafana.local.puvvadi.net/
+                icon: si:grafana
+
+          - type: docker-containers
+            show-stopped: false
+            show-icons: true
+            refresh-interval: 5m
+
+          - type: markets
+            markets:
+              - symbol: ^BSESN
+                name: SENSEX
+              - symbol: ^NSEI
+                name: NIFTY 50
+              - symbol: AUROPHARMA.NS
+                name: AUROPHARMA
+              - symbol: CDSL.NS
+                name: CDSL
+              - symbol: SETFGOLD.NS
+                name: SBI Gold ETF
+
+      - size: small
+        widgets:
+          - type: dns-stats
+            service: adguard
+            url: https://guard.dns.puvvadi.net
+            username: ${ADGUARD_USERNAME}
+            password: ${ADGUARD_PASSWORD}
+          - type: dns-stats
+            service: pihole-v6
+            url: https://dns.local.puvvadi.net
+            password: ${PIHOLE_PASSWORD}
+          - type: calendar
+            first-day-of-week: monday
+            show-week-numbers: true
+          - type: weather
+            location: Hyderabad, India
+            units: metric
+            hour-format: 12h
