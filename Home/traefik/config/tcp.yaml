@@ -1,0 +1,25 @@
+tcp:
+  routers:
+    mqtt:
+      rule: "HostSNI(`mqtt.local.puvvadi.net`)"
+      entryPoints:
+        - "mqtt"
+      tls: true
+      service: mqtt
+      middlewares:
+        - default-whitelist-tcp
+
+  services:
+    mqtt:
+      loadBalancer:
+        servers:
+          - address: "10.20.30.5:1883"
+
+  middlewares:
+    default-whitelist-tcp:
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/8"
+          - "192.168.0.0/16"
+          - "172.16.0.0/12"
+          - "100.64.0.0/10"

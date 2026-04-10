@@ -1,0 +1,92 @@
+http:
+  routers:
+    gitea:
+      entryPoints:
+        - "https"
+      rule: "Host(`git.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: gitea
+
+    pihole:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: pihole
+
+    haos:
+      entryPoints:
+        - "https"
+      rule: "Host(`ha.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: haos
+
+    pg:
+      entryPoints:
+        - "https"
+      rule: "Host(`pg.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: pg
+
+    esphome:
+      entryPoints:
+        - "https"
+      rule: "Host(`esphome.local.puvvadi.net`)"
+      tls: {}
+      service: esphome
+
+    z2m:
+      entryPoints:
+        - "https"
+      rule: "Host(`z2m.local.puvvadi.net`)"
+      tls: {}
+      service: z2m
+
+  services:
+    esphome:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.30.110:6052"
+        passHostHeader: true
+
+    gitea:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.140:3000"
+        passHostHeader: true
+
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "https://10.20.20.20"
+        passHostHeader: true
+
+    haos:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.30.5:8123"
+        passHostHeader: true
+
+    pg:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.115:8080"
+        passHostHeader: true
+
+    z2m:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.30.9:8080"
+        passHostHeader: true

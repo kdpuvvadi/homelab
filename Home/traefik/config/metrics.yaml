@@ -1,0 +1,34 @@
+http:
+  routers:
+    grafana:
+      entryPoints:
+        - "https"
+      rule: "Host(`grafana.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: grafana
+
+    prom:
+      entryPoints:
+        - "https"
+      rule: "Host(`prometheus.local.puvvadi.net`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: prom
+
+  services:
+    grafana:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.135:3000"
+        passHostHeader: true
+
+    prom:
+      loadBalancer:
+        servers:
+          - url: "http://10.20.20.135:9090"
+        passHostHeader: true
