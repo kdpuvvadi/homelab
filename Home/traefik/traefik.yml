@@ -1,0 +1,64 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false # Disable anonymous usage data collection to enhance privacy and security.
+
+log:
+  level: INFO # Available levels: DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+
+api:
+  dashboard: true
+  debug: false
+
+entryPoints:
+  http:
+    address: ":80"
+    forwardedHeaders:
+      insecure: true
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+
+  https:
+    address: ":443"
+
+  # dns over tls entry point, used for dnscrypt-proxy
+  dnsovertls:
+    address: ":853"
+
+  # prometheus metrics entry point
+  metrics:
+    address: ":8082"
+
+  # mqtt entry point
+  mqtt:
+    address: ":8883"
+
+serversTransport:
+  insecureSkipVerify: true
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /config
+    watch: true # Watch for changes in the configuration directory and automatically reload Traefik when changes are detected.
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: email@example.com # Replace with your actual cloudflare email address
+      storage: /acme.json
+      dnsChallenge:
+        provider: cloudflare
+        propagation:
+          delayBeforeChecks: 60s
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
+
+# enable prometheus metrics
+metrics:
+  prometheus:
+    entryPoint: metrics

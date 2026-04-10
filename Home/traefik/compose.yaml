@@ -1,0 +1,78 @@
+---
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    ports:
+      - 80:80 # http
+      - 443:443 #https
+      - 8082:8082/tcp # metrics
+      - 8082:8082/udp # metrics
+      - 853:853/tcp # dnsovertls
+      - 853:853/udp # dnsovertls
+      - 8883:8883/tcp # mqtt
+    dns:
+      - 10.20.20.2
+      - 1.1.1.1
+    env_file:
+      - .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./acme.json:/acme.json
+      - ./config:/config:ro # For dynamic configuration files
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.home.puvvadi.net`)"
+      # To create user:password pair, use this command: echo $(htpasswd -nB user) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.middlewares.traefik-auth.basicauth.users="
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.home.puvvadi.net`)"
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=local.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[1].sans=*.local.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[2].sans=dns.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[3].sans=*.dns.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[4].sans=home.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.tls.domains[5].sans=*.home.puvvadi.net"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+
+  traefik-certs-dumper:
+    container_name: traefik-certs-dumper
+    image: ldez/traefik-certs-dumper:latest
+    # The command waits for the acme.json file to be created and populated with certificates by Traefik, then it dumps the certificates into the specified directory. It also watches for changes in the acme.json file to update the dumped certificates accordingly.
+    entrypoint: sh -c '
+      apk add jq
+      ; while ! [ -e /acme.json ]
+      || ! [ `jq ".[] | .Certificates | length" /acme.json` != 0 ]; do
+      sleep 1
+      ; done
+      && traefik-certs-dumper file --domain-subdir
+      --crt-ext=.pem --key-ext=.pem
+      --version v3 --watch
+      --source /acme.json --dest /certs'
+    volumes:
+      - ./certs:/certs # Output directory for the dumped certificates
+      - ./acme.json:/acme.json:ro # Read-only access to the acme.json file
+    networks:
+      - proxy
+    restart: unless-stopped
+    depends_on:
+      - traefik
+
+networks:
+  proxy:
+    external: true
